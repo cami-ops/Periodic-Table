@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Periodic Table (Elements 1–10)</title>
+
+<style>
+  :root {
+    /* 🎨 Professional Light Purple Theme */
+    --bg-start: #f4eafb;
+    --bg-end: #e9d7f7;
+    --text-color: #3a2e4c;
+    --h1-color: #5e4b8b;
+    --metal: #e9d5ff;
+    --nonmetal: #f7e9ff;
+    --noblegas: #f1ddff;
+    --element-border: #cbb3e8;
+    --hover-shadow: rgba(155, 107, 204, 0.3);
+    --modal-bg: rgba(255, 255, 255, 0.96);
+    --btn-bg: #b084cc;
+    --btn-hover-bg: #9b6bcc;
+    --btn-text-color: #fff;
+  }
+
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
+    color: var(--text-color);
+    text-align: center;
+    padding: 20px;
+  }
+
+  h1 {
+    color: var(--h1-color);
+    font-weight: 700;
+    margin-bottom: 30px;
+    font-size: 1.8rem;
+  }
+
+  /* Periodic Table Grid */
+  .table {
+    display: grid;
+    grid-template-columns: repeat(18, 70px);
+    grid-auto-rows: 90px;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 10px;
+  }
+
+  /* Element Box */
+  .element {
+    border-radius: 10px;
+    border: 1px solid var(--element-border);
+    background-color: var(--nonmetal);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .element:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px var(--hover-shadow);
+  }
+
+  .element[data-type="noblegas"] {
+    background-color: var(--noblegas);
+  }
+
+  .element[data-type="metal"] {
+    background-color: var(--metal);
+  }
+
+  .number {
+    font-size: 0.7rem;
+    position: absolute;
+    top: 5px;
+    left: 6px;
+    color: #6a4fa3;
+  }
+
+  .symbol {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #4b3b73;
+  }
+
+  .name {
+    font-size: 0.7rem;
+    color: #7a6a9a;
+  }
+
+  /* Modal */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(58, 46, 76, 0.4);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .modal-content {
+    background: var(--modal-bg);
+    padding: 25px;
+    border-radius: 12px;
+    width: 320px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(176, 132, 204, 0.2);
+  }
+
+  .modal-content h2 {
+    margin-bottom: 10px;
+    color: var(--h1-color);
+    font-size: 1.5em;
+  }
+
+  .element-image {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+
+  .close, .nav-btn {
+    background: var(--btn-bg);
+    color: var(--btn-text-color);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 14px;
+    cursor: pointer;
+    font-weight: 600;
+    margin: 5px;
+    transition: background 0.3s ease;
+  }
+
+  .close:hover, .nav-btn:hover {
+    background: var(--btn-hover-bg);
+  }
+
+  .nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 25px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9rem;
+  }
+
+  .legend-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+  }
+
+  .metal-color { background-color: var(--metal); border: 1px solid var(--element-border); }
+  .nonmetal-color { background-color: var(--nonmetal); border: 1px solid var(--element-border); }
+  .noblegas-color { background-color: var(--noblegas); border: 1px solid var(--element-border); }
+
+  /* 📱 Responsive Design */
+  @media (max-width: 900px) {
+    .table {
+      grid-template-columns: repeat(9, 60px);
+      grid-auto-rows: 80px;
+      gap: 5px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    body {
+      padding: 10px;
+    }
+
+    h1 {
+      font-size: 1.4rem;
+    }
+
+    .table {
+      grid-template-columns: repeat(5, 60px);
+      grid-auto-rows: 80px;
+      gap: 5px;
+    }
+
+    .element {
+      width: 60px;
+      height: 80px;
+    }
+
+    .symbol {
+      font-size: 1.1rem;
+    }
+
+    .name {
+      font-size: 0.6rem;
+    }
+
+    .modal-content {
+      width: 90%;
+      padding: 15px;
+    }
+
+    .element-image {
+      width: 80px;
+      height: 80px;
+    }
+
+    .close, .nav-btn {
+      padding: 6px 10px;
+      font-size: 0.9rem;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .table {
+      grid-template-columns: repeat(3, 70px);
+      grid-auto-rows: 80px;
+      gap: 6px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<h1>Periodic Table (Elements 1–10)</h1>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-color metal-color"></div>Metal</div>
+  <div class="legend-item"><div class="legend-color nonmetal-color"></div>Nonmetal</div>
+  <div class="legend-item"><div class="legend-color noblegas-color"></div>Noble Gas</div>
+</div>
+
+<div class="table" id="periodic-table"></div>
+
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h2 id="modal-symbol"></h2>
+    <img id="modal-image" src="" alt="Element Image" class="element-image" />
+    <p><strong>Atomic Number:</strong> <span id="modal-number"></span></p>
+    <p><strong>Name:</strong> <span id="modal-name"></span></p>
+    <p><strong>Atomic Weight:</strong> <span id="modal-weight"></span></p>
+    <div class="nav-buttons">
+      <button class="nav-btn" id="prev-btn">Previous</button>
+      <button class="nav-btn" id="next-btn">Next</button>
+    </div>
+    <button class="close" id="close-btn">Close</button>
+  </div>
+</div>
+
+<script>
+const elements = [
+  { n: 1, s: "H", name: "Hydrogen", w: "1.00784", x: 1, y: 1, img: "images/1.jpg", type: "nonmetal" },
+  { n: 2, s: "He", name: "Helium", w: "4.0026", x: 18, y: 1, img: "images/2.jpg", type: "noblegas" },
+  { n: 3, s: "Li", name: "Lithium", w: "6.938", x: 1, y: 2, img: "images/3.jpg", type: "metal" },
+  { n: 4, s: "Be", name: "Beryllium", w: "9.01218", x: 2, y: 2, img: "images/4.jpg", type: "metal" },
+  { n: 5, s: "B", name: "Boron", w: "10.806", x: 13, y: 2, img: "images/5.jpg", type: "nonmetal" },
+  { n: 6, s: "C", name: "Carbon", w: "12.0096", x: 14, y: 2, img: "images/6.jpg", type: "nonmetal" },
+  { n: 7, s: "N", name: "Nitrogen", w: "14.00643", x: 15, y: 2, img: "images/7.jpg", type: "nonmetal" },
+  { n: 8, s: "O", name: "Oxygen", w: "15.99903", x: 16, y: 2, img: "images/8.jpg", type: "nonmetal" },
+  { n: 9, s: "F", name: "Fluorine", w: "18.99840", x: 17, y: 2, img: "images/9.jpg", type: "nonmetal" },
+  { n: 10, s: "Ne", name: "Neon", w: "20.1797", x: 18, y: 2, img: "images/10.jpg", type: "noblegas" }
+];
+
+const table = document.getElementById("periodic-table");
+const modal = document.getElementById("modal");
+const modalSymbol = document.getElementById("modal-symbol");
+const modalNumber = document.getElementById("modal-number");
+const modalName = document.getElementById("modal-name");
+const modalWeight = document.getElementById("modal-weight");
+const modalImage = document.getElementById("modal-image");
+const closeBtn = document.getElementById("close-btn");
+const prevBtn = document.getElementById("prev-btn");
+const nextBtn = document.getElementById("next-btn");
+
+let currentIndex = 0;
+
+function openModal(index) {
+  const el = elements[index];
+  currentIndex = index;
+  modalSymbol.textContent = el.s;
+  modalNumber.textContent = el.n;
+  modalName.textContent = el.name;
+  modalWeight.textContent = el.w;
+  modalImage.src = el.img;
+  modal.style.display = "flex";
+}
+
+function closeModal() {
+  modal.style.display = "none";
+}
+
+function navigate(direction) {
+  currentIndex += direction;
+  if (currentIndex < 0) currentIndex = elements.length - 1;
+  if (currentIndex >= elements.length) currentIndex = 0;
+  openModal(currentIndex);
+}
+
+elements.forEach((el, index) => {
+  const div = document.createElement("div");
+  div.className = "element";
+  div.setAttribute("data-type", el.type);
+  div.style.gridColumn = el.x;
+  div.style.gridRow = el.y;
+  div.innerHTML = `
+      <div class="number">${el.n}</div>
+      <div class="symbol">${el.s}</div>
+      <div class="name">${el.name}</div>
+  `;
+  div.addEventListener("click", () => openModal(index));
+  table.appendChild(div);
+});
+
+closeBtn.addEventListener("click", closeModal);
+prevBtn.addEventListener("click", () => navigate(-1));
+nextBtn.addEventListener("click", () => navigate(1));
+window.addEventListener("click", e => { if (e.target === modal) closeModal(); });
+</script>
+
+</body>
+</html>
